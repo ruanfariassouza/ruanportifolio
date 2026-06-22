@@ -1,11 +1,14 @@
 import { useLayoutEffect, useRef } from 'react'
-import { services } from '../../data/services'
+import { localizeServices } from '../../data/services'
 import usePreloader from '../../hooks/usePreloader'
 import { gsap } from '../../utils/gsap'
+import useLanguage from '../../hooks/useLanguage'
 
 export default function ServicesHome() {
   const rootRef = useRef(null)
   const { isLoading } = usePreloader()
+  const { language, copy } = useLanguage()
+  const services = localizeServices(language)
 
   useLayoutEffect(() => {
     if (isLoading) return undefined
@@ -20,14 +23,14 @@ export default function ServicesHome() {
       })
     })
     return () => context.revert()
-  }, [isLoading])
+  }, [isLoading, language])
 
   return (
-    <section ref={rootRef} className="services section-pad" id="servicos">
+    <section ref={rootRef} className="services section-pad" id="competencias">
       <div className="shell">
         <div className="section-heading">
-          <p className="eyebrow"><span /> Serviços</p>
-          <h2>O que posso construir<br /><em>com um negócio real.</em></h2>
+          <p className="eyebrow"><span /> {copy.capabilities.eyebrow}</p>
+          <h2>{copy.capabilities.title}<br /><em>{copy.capabilities.accent}</em></h2>
         </div>
         <div className="services__grid">
           {services.map((service) => (

@@ -5,6 +5,7 @@ import Nav from './components/ui/Nav'
 import Preloader from './components/ui/Preloader'
 import CursorCustom from './components/shared/CursorCustom'
 import PageTransition from './components/layout/PageTransition'
+import useLanguage from './hooks/useLanguage'
 
 const Home = lazy(() => import('./pages/Home'))
 const Projects = lazy(() => import('./pages/Projects'))
@@ -14,6 +15,7 @@ const Contact = lazy(() => import('./pages/Contact'))
 
 export default function App() {
   const location = useLocation()
+  const { copy } = useLanguage()
   return (
     <>
       <Preloader />
@@ -21,7 +23,7 @@ export default function App() {
       <Nav />
       <AnimatePresence mode="wait" initial={false}>
         <PageTransition key={location.pathname}>
-          <Suspense fallback={<div className="route-loader" aria-label="Carregando página" />}>
+          <Suspense fallback={<div className="route-loader" aria-label={copy.routeLoading} />}>
             <Routes location={location}>
               <Route path="/" element={<Home />} />
               <Route path="/projetos" element={<Projects />} />

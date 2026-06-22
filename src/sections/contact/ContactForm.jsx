@@ -2,8 +2,9 @@ import { useRef, useState } from 'react'
 import Button from '../../components/ui/Button'
 import { gsap } from '../../utils/gsap'
 import { CONTACT_EMAIL, contactChannels } from '../../data/site'
+import useLanguage from '../../hooks/useLanguage'
 
-const initialValues = { nome: '', email: '', assunto: '', mensagem: '' }
+const initialValues = { nome: '', email: '', empresa: '', mensagem: '' }
 
 export default function ContactForm() {
   const [values, setValues] = useState(initialValues)
@@ -11,13 +12,14 @@ export default function ContactForm() {
   const [errors, setErrors] = useState({})
   const [success, setSuccess] = useState(false)
   const buttonRef = useRef(null)
+  const { language, copy } = useLanguage()
 
   const validate = () => {
     const next = {}
-    if (values.nome.trim().length < 2) next.nome = 'Como posso te chamar?'
-    if (!/^\S+@\S+\.\S+$/.test(values.email)) next.email = 'Digite um e-mail válido.'
-    if (values.assunto.trim().length < 3) next.assunto = 'Qual é o assunto?'
-    if (values.mensagem.trim().length < 10) next.mensagem = 'Conte um pouco mais sobre o projeto.'
+    if (values.nome.trim().length < 2) next.nome = copy.contact.errors.name
+    if (!/^\S+@\S+\.\S+$/.test(values.email)) next.email = copy.contact.errors.email
+    if (values.empresa.trim().length < 2) next.empresa = copy.contact.errors.company
+    if (values.mensagem.trim().length < 10) next.mensagem = copy.contact.errors.message
     return next
   }
 
@@ -30,8 +32,8 @@ export default function ContactForm() {
       return
     }
     const button = buttonRef.current
-    const subject = encodeURIComponent(values.assunto)
-    const body = encodeURIComponent(`Nome: ${values.nome}\nE-mail: ${values.email}\n\n${values.mensagem}`)
+    const subject = encodeURIComponent(`${copy.contact.subject} — ${values.empresa}`)
+    const body = encodeURIComponent(`${copy.contact.bodyName}: ${values.nome}\n${copy.contact.bodyEmail}: ${values.email}\n${copy.contact.bodyCompany}: ${values.empresa}\n\n${values.mensagem}`)
     gsap.timeline({ onComplete: () => {
       setSuccess(true)
       if (CONTACT_EMAIL) window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`
@@ -42,20 +44,20 @@ export default function ContactForm() {
   }
 
   const fields = [
-    { name: 'nome', label: 'Nome', type: 'text', autoComplete: 'name' },
-    { name: 'email', label: 'E-mail', type: 'email', autoComplete: 'email' },
-    { name: 'assunto', label: 'Assunto', type: 'text', autoComplete: 'off' },
+    { name: 'nome', label: copy.contact.fields.name, type: 'text', autoComplete: 'name' },
+    { name: 'email', label: copy.contact.fields.email, type: 'email', autoComplete: 'email' },
+    { name: 'empresa', label: copy.contact.fields.company, type: 'text', autoComplete: 'organization' },
   ]
 
   return (
     <section className="contact-form-section shell section-pad" id="form">
       <div className="contact-form-section__aside">
-        <p className="eyebrow"><span /> Comece por aqui</p>
-        <h2>Vamos começar pelo que precisa ficar mais claro.</h2>
+        <p className="eyebrow"><span /> {copy.contact.formEyebrow}</p>
+        <h2>{copy.contact.formTitle}</h2>
         {CONTACT_EMAIL && <a href={`mailto:${CONTACT_EMAIL}`} data-cursor="link">{CONTACT_EMAIL}</a>}
-        {!CONTACT_EMAIL && <p className="contact-form-section__config">Canal direto definido por variável de ambiente.</p>}
-        {contactChannels.filter((channel) => !channel.href.startsWith('mailto:')).map((channel) => <a key={channel.label} href={channel.href} target="_blank" rel="noreferrer" data-cursor="link">{channel.label} ↗</a>)}
-        <p>Vila Velha, Espírito Santo<br />Brasil · GMT−3</p>
+        {!CONTACT_EMAIL && <p className="contact-form-section__config">{copy.contact.config}</p>}
+        {contactChannels.filter((channel) => !channel.href.startsWith('mailto:')).map((channel) => <a key={channel.label} href={channel.href} target="_blank" rel="noreferrer" data-cursor="link">{language === 'en' && channel.label === 'E-mail' ? 'Email' : channel.label} ↗</a>)}
+        <p>{copy.contact.location[0]}<br />{copy.contact.location[1]}</p>
       </div>
       <form className="contact-form" onSubmit={handleSubmit} noValidate>
         {fields.map((field) => (
@@ -76,7 +78,7 @@ export default function ContactForm() {
           </div>
         ))}
         <div className={`field field--textarea ${errors.mensagem ? 'field--error' : ''} ${focused === 'mensagem' || values.mensagem ? 'field--active' : ''}`}>
-          <label htmlFor="mensagem">Mensagem</label>
+          <label htmlFor="mensagem">{copy.contact.fields.message}</label>
           <textarea
             id="mensagem"
             name="mensagem"
@@ -91,9 +93,9 @@ export default function ContactForm() {
         </div>
         <div className="contact-form__submit">
           <div ref={buttonRef} className="contact-form__button-wrap">
-            {success ? <span className="contact-form__check" aria-label="Mensagem pronta">✓</span> : <Button type="submit">Enviar mensagem</Button>}
+            {success ? <span className="contact-form__check" aria-label={copy.contact.ready}>✓</span> : <Button type="submit">{copy.contact.submit}</Button>}
           </div>
-          {success && <p role="status">{CONTACT_EMAIL ? 'Mensagem preparada no seu aplicativo de e-mail.' : 'Mensagem validada. Configure VITE_CONTACT_EMAIL para habilitar o envio.'}</p>}
+          {success && <p role="status">{CONTACT_EMAIL ? copy.contact.success : copy.contact.configure}</p>}
         </div>
       </form>
     </section>

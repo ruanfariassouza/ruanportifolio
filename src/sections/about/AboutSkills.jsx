@@ -1,16 +1,11 @@
 import { useRef, useState } from 'react'
-
-const categories = [
-  { title: 'Diagnóstico', items: ['Bio e destaques', 'Clareza da oferta', 'Linha editorial', 'Caminho de contato', 'Leitura de perfil'] },
-  { title: 'Conteúdo', items: ['Planejamento', 'Roteiros curtos', 'Captação mobile', 'Carrosséis', 'Edição de Reels'] },
-  { title: 'Direção', items: ['Sistema visual', 'Tom de voz', 'Ritmo editorial', 'Apresentação de produto', 'Prototipagem'] },
-  { title: 'Tecnologia', items: ['React', 'Three.js', 'GSAP', 'Figma', 'IA aplicada'] },
-]
+import useLanguage from '../../hooks/useLanguage'
 
 export default function AboutSkills() {
   const trackRef = useRef(null)
   const drag = useRef({ active: false, start: 0, scroll: 0 })
   const [dragging, setDragging] = useState(false)
+  const { copy } = useLanguage()
 
   const onPointerDown = (event) => {
     drag.current = { active: true, start: event.clientX, scroll: trackRef.current.scrollLeft }
@@ -25,7 +20,7 @@ export default function AboutSkills() {
 
   return (
     <section className="about-skills section-pad">
-      <div className="shell section-heading"><p className="eyebrow"><span /> Repertório em construção</p><h2>O que já consigo<br /><em>colocar em prática.</em></h2></div>
+      <div className="shell section-heading"><p className="eyebrow"><span /> {copy.about.skillsEyebrow}</p><h2>{copy.about.skillsTitle}<br /><em>{copy.about.skillsAccent}</em></h2></div>
       <div
         ref={trackRef}
         className={`about-skills__track ${dragging ? 'is-dragging' : ''}`}
@@ -34,7 +29,7 @@ export default function AboutSkills() {
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
       >
-        {categories.map((category, index) => (
+        {copy.about.categories.map((category, index) => (
           <article key={category.title}>
             <span>0{index + 1}</span><h3>{category.title}</h3>
             <ul>{category.items.map((item) => <li key={item}>{item}</li>)}</ul>

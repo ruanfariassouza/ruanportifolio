@@ -1,13 +1,16 @@
 import { useLayoutEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import ProjectVisual from '../../components/shared/ProjectVisual'
-import { projects } from '../../data/projects'
+import { localizeProjects, projects as projectData } from '../../data/projects'
 import usePreloader from '../../hooks/usePreloader'
 import { gsap } from '../../utils/gsap'
+import useLanguage from '../../hooks/useLanguage'
 
 export default function ProjectsList() {
   const rootRef = useRef(null)
   const { isLoading } = usePreloader()
+  const { language, copy } = useLanguage()
+  const projects = localizeProjects(projectData, language)
 
   useLayoutEffect(() => {
     if (isLoading) return undefined
@@ -22,11 +25,11 @@ export default function ProjectsList() {
       })
     })
     return () => context.revert()
-  }, [isLoading])
+  }, [isLoading, language])
 
   return (
     <section ref={rootRef} className="projects-list shell">
-      <div className="projects-list__note"><p>Projetos apresentados com a natureza correta: real, estudo autoral ou marca-conceito. O objetivo é mostrar raciocínio e direção, não fabricar resultados.</p></div>
+      <div className="projects-list__note"><p>{copy.projects.note}</p></div>
       <div className="projects-grid">
         {projects.map((project) => (
           <Link key={project.slug} className="project-card" to={`/projetos/${project.slug}`} data-cursor="project">

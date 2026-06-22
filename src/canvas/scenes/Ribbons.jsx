@@ -26,7 +26,7 @@ function RibbonCollection({ active }) {
     y: Math.sin(index * 1.7) * 0.8,
     z: -2 - (index % 5) * 0.5,
     rotation: (Math.random() - 0.5) * 0.9,
-    color: index % 2 === 0 ? '#c8b89d' : '#8ea7c2',
+    color: index % 2 === 0 ? '#1d4ed8' : '#3b82f6',
     offset: index * 0.73,
   })), [])
 

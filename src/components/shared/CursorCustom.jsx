@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { lerp } from '../../utils/math'
 import usePreloader from '../../hooks/usePreloader'
-
-const labels = { project: 'Ver →', video: 'Play' }
+import useLanguage from '../../hooks/useLanguage'
 
 export default function CursorCustom() {
   const dotRef = useRef(null)
   const ringRef = useRef(null)
   const labelRef = useRef(null)
   const { isLoading } = usePreloader()
+  const { copy } = useLanguage()
+  const labels = copy.cursor
 
   useEffect(() => {
     if (isLoading || window.matchMedia('(pointer: coarse)').matches) return undefined
@@ -50,7 +51,7 @@ export default function CursorCustom() {
       document.removeEventListener('pointerover', onOver)
       document.removeEventListener('pointerout', onOut)
     }
-  }, [isLoading])
+  }, [isLoading, labels])
 
   return (
     <div className={isLoading ? 'cursor-system is-hidden' : 'cursor-system'}>

@@ -5,9 +5,9 @@ import { gsap } from '../../utils/gsap'
 import usePreloader from '../../hooks/usePreloader'
 
 const colors = {
-  '/': '#c8b89d',
-  '/projetos': '#8ea7c2',
-  '/sobre': '#c8b89d',
+  '/': '#2563eb',
+  '/projetos': '#3b82f6',
+  '/sobre': '#2563eb',
   '/contato': '#050505',
 }
 
@@ -37,7 +37,7 @@ export default function PageTransition({ children }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
     >
-      <div ref={curtainRef} className="page-curtain" style={{ background: colors[routeKey] || '#c8b89d' }} />
+      <div ref={curtainRef} className="page-curtain" style={{ background: colors[routeKey] || '#2563eb' }} />
       {children}
     </motion.div>
   )

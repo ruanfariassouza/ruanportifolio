@@ -44,7 +44,7 @@ function Particles({ active }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" array={positions} count={COUNT} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial color="#c8b89d" size={0.035} transparent opacity={0.42} sizeAttenuation depthWrite={false} />
+      <pointsMaterial color="#2563eb" size={0.035} transparent opacity={0.48} sizeAttenuation depthWrite={false} />
     </points>
   )
 }

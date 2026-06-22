@@ -1,11 +1,13 @@
 import { useLayoutEffect, useRef } from 'react'
 import usePreloader from '../../hooks/usePreloader'
 import { gsap, SplitText } from '../../utils/gsap'
+import useLanguage from '../../hooks/useLanguage'
 
 export default function ProjectsHero() {
   const rootRef = useRef(null)
   const titleRef = useRef(null)
   const { isLoading } = usePreloader()
+  const { language, copy } = useLanguage()
 
   useLayoutEffect(() => {
     if (isLoading) return undefined
@@ -22,13 +24,13 @@ export default function ProjectsHero() {
       gsap.fromTo('.projects-hero__sub', { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, delay: 0.45, duration: 0.8, ease: 'expo.out' })
     })
     return () => { context.revert(); split.revert() }
-  }, [isLoading])
+  }, [isLoading, language])
 
   return (
     <header ref={rootRef} className="projects-hero shell">
-      <p className="eyebrow"><span /> Estudos autorais e projetos reais</p>
-      <h1 ref={titleRef}>Projetos</h1>
-      <div className="projects-hero__sub"><span>Problema · Insight · Sistema · Aprendizado</span><span>2025</span></div>
+      <p className="eyebrow"><span /> {copy.projects.eyebrow}</p>
+      <h1 key={language} ref={titleRef}>{copy.projects.title}</h1>
+      <div className="projects-hero__sub"><span>{copy.projects.method}</span><span>2025</span></div>
     </header>
   )
 }

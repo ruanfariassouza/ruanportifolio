@@ -16,8 +16,8 @@ function Sphere({ active }) {
     uTime: { value: 0 },
     uMouse: { value: new THREE.Vector2() },
     uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-    uColor1: { value: new THREE.Color('#c8b89d') },
-    uColor2: { value: new THREE.Color('#8ea7c2') },
+    uColor1: { value: new THREE.Color('#1d4ed8') },
+    uColor2: { value: new THREE.Color('#3b82f6') },
   }), [])
 
   useFrame(({ pointer, size }) => {
