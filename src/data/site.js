@@ -13,6 +13,6 @@ export const contactChannels = [
 export const site = {
   name: 'Ruan Farias',
   location: 'Vila Velha · ES',
-  role: 'Social Media · Conteúdo · Direção Criativa',
-  availability: 'Disponível para oportunidades profissionais em social media e conteúdo.',
+  role: 'Social Media · Direção Criativa · Presença Digital',
+  availability: 'Disponível para projetos de conteúdo e direção criativa com marcas e negócios locais.',
 }

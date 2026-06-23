@@ -1,21 +1,21 @@
 export const services = [
-  { num: '01', title: 'Diagnóstico de Perfil', desc: 'Analiso bio, destaques, feed, posicionamento e clareza da comunicação antes de propor conteúdo.' },
-  { num: '02', title: 'Planejamento Editorial', desc: 'Organizo pilares, calendário, formatos e pautas a partir do objetivo e da rotina da marca.' },
-  { num: '03', title: 'Roteiro e Copy', desc: 'Transformo briefing em ganchos, roteiros, legendas e CTAs adequados a cada formato.' },
-  { num: '04', title: 'Captação Mobile', desc: 'Planejo enquadramentos e sequências para transformar produto, equipe e bastidores em material útil.' },
-  { num: '05', title: 'Edição de Vídeos Curtos', desc: 'Trabalho cortes, legendas, ritmo e acabamento com prioridade para retenção e clareza.' },
-  { num: '06', title: 'Organização de Perfil', desc: 'Estruturo bio, destaques e feed para a identidade e a proposta da marca serem compreendidas.' },
-  { num: '07', title: 'Leitura de Métricas', desc: 'Observo alcance, retenção, salvamentos e respostas para orientar os próximos testes editoriais.' },
+  { num: '01', title: 'Diagnóstico de Presença', desc: 'Leio o perfil como quem chega pela primeira vez: o que a marca comunica, o que ainda fica confuso e onde existe uma história melhor para contar.' },
+  { num: '02', title: 'Direção Editorial', desc: 'Defino ideias centrais, pilares, formatos e ritmo para o conteúdo ter continuidade sem virar fórmula.' },
+  { num: '03', title: 'Roteiro e Texto', desc: 'Escrevo ganchos, roteiros, legendas e chamadas com clareza, personalidade e uma voz que combine com o negócio.' },
+  { num: '04', title: 'Direção de Captação', desc: 'Planejo cenas, enquadramentos e sequências para transformar produto, rotina e bastidores em material com intenção.' },
+  { num: '05', title: 'Edição de Conteúdo', desc: 'Organizo corte, som, legendas e ritmo para cada vídeo sustentar a ideia sem perder naturalidade.' },
+  { num: '06', title: 'Organização de Presença', desc: 'Alinho bio, destaques, feed e caminhos de contato para a marca parecer mais clara, coerente e fácil de entender.' },
+  { num: '07', title: 'Leitura e Ajuste', desc: 'Observo alcance, retenção, salvamentos e respostas para entender o que merece continuar, mudar ou ser testado de outro jeito.' },
 ]
 
 const servicesEn = [
-  { num: '01', title: 'Profile Diagnosis', desc: 'I analyze bio, highlights, feed, positioning and communication clarity before proposing content.' },
-  { num: '02', title: 'Editorial Planning', desc: 'I organize pillars, calendars, formats and topics around the brand’s goals and routine.' },
-  { num: '03', title: 'Scripting and Copy', desc: 'I turn briefs into hooks, scripts, captions and calls to action suited to each format.' },
-  { num: '04', title: 'Mobile Capture', desc: 'I plan framing and sequences that turn products, teams and behind-the-scenes moments into useful material.' },
-  { num: '05', title: 'Short-form Editing', desc: 'I work on cuts, captions, rhythm and finish with retention and clarity as priorities.' },
-  { num: '06', title: 'Profile Organization', desc: 'I structure bios, highlights and feeds so the brand identity and proposition are easy to understand.' },
-  { num: '07', title: 'Metrics Analysis', desc: 'I observe reach, retention, saves and responses to guide the next editorial tests.' },
+  { num: '01', title: 'Presence Diagnosis', desc: 'I read the profile as a first-time visitor: what the brand communicates, what remains unclear and where a better story is waiting to be told.' },
+  { num: '02', title: 'Editorial Direction', desc: 'I define central ideas, pillars, formats and rhythm so content can stay consistent without turning into a formula.' },
+  { num: '03', title: 'Scripts and Writing', desc: 'I write hooks, scripts, captions and calls to action with clarity, personality and a voice that fits the business.' },
+  { num: '04', title: 'Capture Direction', desc: 'I plan scenes, framing and sequences that turn products, routines and behind-the-scenes moments into intentional material.' },
+  { num: '05', title: 'Content Editing', desc: 'I shape cuts, sound, captions and rhythm so every video supports the idea without losing its natural feel.' },
+  { num: '06', title: 'Presence Organization', desc: 'I align bios, highlights, feeds and contact paths so the brand feels clearer, more coherent and easier to understand.' },
+  { num: '07', title: 'Review and Adjustment', desc: 'I look at reach, retention, saves and responses to understand what should continue, change or be tested differently.' },
 ]
 
 export const localizeServices = (language) => (language === 'en' ? servicesEn : services)
