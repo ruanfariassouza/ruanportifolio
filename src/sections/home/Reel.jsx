@@ -14,7 +14,7 @@ export default function Reel({ isClone = false }) {
   const projects = localizeProjects(featuredProjects, language)
 
   useLayoutEffect(() => {
-    if (isLoading || isClone || window.innerWidth < 768) return undefined
+    if (isLoading || isClone || window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
     const context = gsap.context(() => {
       const distance = () => Math.max(0, trackRef.current.scrollWidth - window.innerWidth)
       gsap.to(trackRef.current, {

@@ -5,7 +5,7 @@ export const translations = {
       description: 'Direção criativa, conteúdo e presença digital para marcas e negócios que têm mais a mostrar.',
     },
     nav: {
-      aria: 'Navegação principal', home: 'Ruan Farias — início', menu: 'Abrir menu',
+      aria: 'Navegação principal', home: 'Ruan Farias — início', menu: 'Abrir menu', close: 'Fechar menu',
       projects: 'Projetos', process: 'Processo', capabilities: 'Serviços', about: 'Sobre', contact: 'Contato',
       switchLabel: 'Ver site em inglês',
     },
@@ -104,7 +104,7 @@ export const translations = {
       description: 'Creative direction, content and digital presence for brands and businesses with more to show.',
     },
     nav: {
-      aria: 'Main navigation', home: 'Ruan Farias — home', menu: 'Open menu',
+      aria: 'Main navigation', home: 'Ruan Farias — home', menu: 'Open menu', close: 'Close menu',
       projects: 'Projects', process: 'Process', capabilities: 'Services', about: 'About', contact: 'Contact',
       switchLabel: 'View website in Portuguese',
     },

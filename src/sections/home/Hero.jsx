@@ -31,6 +31,14 @@ export default function Hero({ isClone = false }) {
 
   useLayoutEffect(() => {
     if (isLoading || isClone) return undefined
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const tween = gsap.set([headlineRef.current, subRef.current, ctaRef.current, scrollRef.current].filter(Boolean), {
+        y: 0,
+        autoAlpha: 1,
+        clearProps: 'transform',
+      })
+      return () => tween.kill()
+    }
     const split = new SplitText(headlineRef.current, { type: 'words', wordsClass: 'hero-word' })
     const context = gsap.context(() => {
       revealHero(split.words)

@@ -1,8 +1,14 @@
 import { gsap } from './gsap'
 
 const ease = 'expo.out'
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+function showImmediately(targets) {
+  return gsap.set(targets, { y: 0, autoAlpha: 1, clearProps: 'transform' })
+}
 
 export function revealHero(targets, options = {}) {
+  if (reduceMotion()) return showImmediately(targets)
   return gsap.fromTo(targets, { y: options.y ?? 80, autoAlpha: 0 }, {
     y: 0,
     autoAlpha: 1,
@@ -14,6 +20,7 @@ export function revealHero(targets, options = {}) {
 }
 
 export function revealSection(targets, trigger, options = {}) {
+  if (reduceMotion()) return showImmediately(targets)
   return gsap.fromTo(targets, { y: options.y ?? 48, autoAlpha: 0 }, {
     y: 0,
     autoAlpha: 1,
@@ -29,6 +36,7 @@ export function revealSection(targets, trigger, options = {}) {
 }
 
 export function revealCard(targets, trigger, options = {}) {
+  if (reduceMotion()) return showImmediately(targets)
   return gsap.fromTo(targets, { y: options.y ?? 54, autoAlpha: 0 }, {
     y: 0,
     autoAlpha: 1,

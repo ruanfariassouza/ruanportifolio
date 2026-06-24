@@ -19,6 +19,10 @@ export default function PageTransition({ children }) {
   useLayoutEffect(() => {
     if (isLoading) return undefined
     const curtain = curtainRef.current
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const tween = gsap.set(curtain, { scaleY: 0 })
+      return () => tween.kill()
+    }
     const timeline = gsap.timeline()
     timeline
       .set(curtain, { scaleY: 0, transformOrigin: 'top center' })

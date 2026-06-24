@@ -7,7 +7,7 @@ let handleRefresh = null
 export function initSmoothScroll(options = {}) {
   if (instance) return instance
   if (typeof window === 'undefined') return null
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null
+  if (window.matchMedia('(prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse)').matches) return null
 
   const scroller = new VirtualScroll(options)
   scroller.onUpdate = () => ScrollTrigger.update()
