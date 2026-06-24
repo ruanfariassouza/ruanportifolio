@@ -4,10 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: '#060606',
-        soft: '#0f0f0f',
-        purple: '#7c3aed',
-        blue: '#2563eb',
+        ink: '#050505',
+        soft: '#0d0d0c',
+        accent: {
+          DEFAULT: '#2563eb',
+          bright: '#3b82f6',
+          deep: '#1d4ed8',
+        },
       },
       fontFamily: {
         display: ['Clash Display', 'sans-serif'],
