@@ -37,7 +37,7 @@ export default function ProjectVisual({ project, compact = false }) {
         <div className="visual-iflow"><span>{copy.visual.diagnosis}</span><div><i /><i /><i /></div><strong>REPAIR<br />WITHOUT<br />NOISE.</strong></div>
       )}
       {project.visual === 'home' && (
-        <div className="visual-home"><span>{copy.visual.home}</span><div><i>{copy.visual.dishes}</i><i>Pet</i><i>{copy.visual.market}</i></div><strong>+12 pts</strong></div>
+        <div className="visual-home"><span>{copy.visual.home}</span><div><i>{copy.visual.dishes}</i><i>{copy.visual.pet}</i><i>{copy.visual.market}</i></div><strong>+12 pts</strong></div>
       )}
 
       <div className="project-visual__bottom"><span>{project.name}</span><span>{project.year}</span></div>
