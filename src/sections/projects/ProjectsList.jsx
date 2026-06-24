@@ -4,6 +4,7 @@ import ProjectVisual from '../../components/shared/ProjectVisual'
 import { localizeProjects, projects as projectData } from '../../data/projects'
 import usePreloader from '../../hooks/usePreloader'
 import { gsap } from '../../utils/gsap'
+import { revealCard } from '../../utils/reveal'
 import useLanguage from '../../hooks/useLanguage'
 
 export default function ProjectsList() {
@@ -15,14 +16,7 @@ export default function ProjectsList() {
   useLayoutEffect(() => {
     if (isLoading) return undefined
     const context = gsap.context(() => {
-      gsap.fromTo('.project-card', { y: 54, autoAlpha: 0 }, {
-        y: 0,
-        autoAlpha: 1,
-        stagger: 0.09,
-        duration: 0.95,
-        delay: 0.15,
-        ease: 'expo.out',
-      })
+      revealCard('.project-card', rootRef.current)
     })
     return () => context.revert()
   }, [isLoading, language])

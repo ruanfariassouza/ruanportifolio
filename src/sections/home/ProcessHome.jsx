@@ -1,30 +1,24 @@
 import { useLayoutEffect, useRef } from 'react'
 import usePreloader from '../../hooks/usePreloader'
 import { gsap } from '../../utils/gsap'
+import { revealSection } from '../../utils/reveal'
 import useLanguage from '../../hooks/useLanguage'
 
-export default function ProcessHome() {
+export default function ProcessHome({ isClone = false }) {
   const rootRef = useRef(null)
   const { isLoading } = usePreloader()
   const { language, copy } = useLanguage()
 
   useLayoutEffect(() => {
-    if (isLoading) return undefined
+    if (isLoading || isClone) return undefined
     const context = gsap.context(() => {
-      gsap.fromTo('.process-row', { y: 36, autoAlpha: 0 }, {
-        y: 0,
-        autoAlpha: 1,
-        stagger: 0.08,
-        duration: 0.85,
-        ease: 'expo.out',
-        scrollTrigger: { trigger: rootRef.current, start: 'top 72%' },
-      })
+      revealSection('.process-row', rootRef.current, { y: 36, stagger: 0.08, duration: 0.85 })
     })
     return () => context.revert()
-  }, [isLoading, language])
+  }, [isClone, isLoading, language])
 
   return (
-    <section ref={rootRef} className="process section-pad" id="processo">
+    <section ref={rootRef} className="process section-pad" id={isClone ? undefined : 'processo'}>
       <div className="shell">
         <div className="process__heading">
           <p className="eyebrow"><span /> {copy.process.eyebrow}</p>

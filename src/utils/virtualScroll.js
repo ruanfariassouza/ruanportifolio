@@ -1,28 +1,42 @@
 import { clamp, lerp } from './math'
 
 export default class VirtualScroll {
-  constructor({ wheelMultiplier = 1, touchMultiplier = 1.8 } = {}) {
+  constructor({
+    wheelMultiplier = 0.9,
+    touchMultiplier = 1.8,
+    lerpFactor = 0.08,
+  } = {}) {
     this.target = 0
     this.current = 0
     this.wheelMultiplier = wheelMultiplier
     this.touchMultiplier = touchMultiplier
+    this.lerpFactor = lerpFactor
+    this.loopHeight = 0
+    this.loopElement = null
     this.touchY = 0
     this.max = 0
     this.raf = null
     this.running = false
+    this.onUpdate = null
 
     this.onWheel = this.onWheel.bind(this)
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)
     this.onResize = this.onResize.bind(this)
     this.tick = this.tick.bind(this)
-
-    this.init()
   }
 
-  init() {
+  setLoopElement(element) {
+    this.loopElement = element
+    this.loopHeight = element?.offsetHeight ?? 0
     this.onResize()
-    document.body.style.overflow = 'hidden'
+  }
+
+  start() {
+    if (this.running) return
+    this.onResize()
+    document.documentElement.classList.add('is-smooth-scroll')
+    document.body.classList.add('is-smooth-scroll')
     window.addEventListener('wheel', this.onWheel, { passive: false })
     window.addEventListener('touchstart', this.onTouchStart, { passive: true })
     window.addEventListener('touchmove', this.onTouchMove, { passive: false })
@@ -31,14 +45,73 @@ export default class VirtualScroll {
     this.tick()
   }
 
+  hasLoop() {
+    return this.loopHeight > 0
+  }
+
+  normalizeLoopPosition() {
+    if (!this.hasLoop()) return
+    while (this.current >= this.loopHeight) {
+      this.current -= this.loopHeight
+      this.target -= this.loopHeight
+    }
+    while (this.current < 0) {
+      this.current += this.loopHeight
+      this.target += this.loopHeight
+    }
+  }
+
   onResize() {
-    this.max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
-    this.target = clamp(this.target, 0, this.max)
+    if (this.loopElement) this.loopHeight = this.loopElement.offsetHeight
+
+    if (this.hasLoop()) {
+      this.max = this.loopHeight
+    } else {
+      this.max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+    }
+
+    if (this.hasLoop()) {
+      this.normalizeLoopPosition()
+    } else {
+      this.target = clamp(this.target, 0, this.max)
+      this.current = clamp(this.current, 0, this.max)
+    }
+
+    this.applyScroll()
+  }
+
+  applyScroll() {
+    window.scrollTo(0, this.current)
+    this.onUpdate?.(this.current)
+  }
+
+  setScroll(value, immediate = false) {
+    if (this.hasLoop()) {
+      let next = value
+      while (next >= this.loopHeight) next -= this.loopHeight
+      while (next < 0) next += this.loopHeight
+      this.target = next
+    } else {
+      this.target = clamp(value, 0, this.max)
+    }
+
+    if (immediate) {
+      this.current = this.target
+      this.applyScroll()
+    }
+  }
+
+  applyDelta(delta) {
+    if (this.hasLoop()) {
+      this.target += delta
+      return
+    }
+    this.target = clamp(this.target + delta, 0, this.max)
   }
 
   onWheel(event) {
     event.preventDefault()
-    this.target = clamp(this.target + event.deltaY * this.wheelMultiplier, 0, this.max)
+    this.applyDelta(event.deltaY * this.wheelMultiplier)
   }
 
   onTouchStart(event) {
@@ -49,16 +122,15 @@ export default class VirtualScroll {
     const nextY = event.touches[0]?.clientY ?? this.touchY
     const delta = (this.touchY - nextY) * this.touchMultiplier
     this.touchY = nextY
-    this.target = clamp(this.target + delta, 0, this.max)
+    this.applyDelta(delta)
     event.preventDefault()
   }
 
   update() {
-    this.current = lerp(this.current, this.target, 0.075)
-    if (Math.abs(this.current - this.target) < 0.01) this.current = this.target
-    window.dispatchEvent(new CustomEvent('virtualscroll', {
-      detail: { current: this.current, target: this.target },
-    }))
+    this.current = lerp(this.current, this.target, this.lerpFactor)
+    if (Math.abs(this.current - this.target) < 0.08) this.current = this.target
+    this.normalizeLoopPosition()
+    this.applyScroll()
     return this.current
   }
 
@@ -75,6 +147,10 @@ export default class VirtualScroll {
     window.removeEventListener('touchstart', this.onTouchStart)
     window.removeEventListener('touchmove', this.onTouchMove)
     window.removeEventListener('resize', this.onResize)
+    document.documentElement.classList.remove('is-smooth-scroll')
+    document.body.classList.remove('is-smooth-scroll')
     document.body.style.overflow = ''
+    this.loopElement = null
+    this.loopHeight = 0
   }
 }

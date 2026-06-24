@@ -1,5 +1,4 @@
 import { useLayoutEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
 import { gsap } from '../../utils/gsap'
 import usePreloader from '../../hooks/usePreloader'
@@ -23,22 +22,16 @@ export default function PageTransition({ children }) {
     const timeline = gsap.timeline()
     timeline
       .set(curtain, { scaleY: 0, transformOrigin: 'top center' })
-      .to(curtain, { scaleY: 1, duration: 0.55, ease: 'power4.inOut' })
+      .to(curtain, { scaleY: 1, duration: 0.5, ease: 'power4.inOut' })
       .set(curtain, { transformOrigin: 'bottom center' })
-      .to(curtain, { scaleY: 0, duration: 0.55, ease: 'power4.inOut' })
+      .to(curtain, { scaleY: 0, duration: 0.5, ease: 'power4.inOut' })
     return () => timeline.kill()
   }, [isLoading, location.pathname])
 
   return (
-    <motion.div
-      className="route-shell"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-    >
+    <div className="route-shell">
       <div ref={curtainRef} className="page-curtain" style={{ background: colors[routeKey] || '#2563eb' }} />
       {children}
-    </motion.div>
+    </div>
   )
 }

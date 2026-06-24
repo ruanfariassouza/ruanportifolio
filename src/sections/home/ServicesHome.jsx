@@ -2,31 +2,25 @@ import { useLayoutEffect, useRef } from 'react'
 import { localizeServices } from '../../data/services'
 import usePreloader from '../../hooks/usePreloader'
 import { gsap } from '../../utils/gsap'
+import { revealSection } from '../../utils/reveal'
 import useLanguage from '../../hooks/useLanguage'
 
-export default function ServicesHome() {
+export default function ServicesHome({ isClone = false }) {
   const rootRef = useRef(null)
   const { isLoading } = usePreloader()
   const { language, copy } = useLanguage()
   const services = localizeServices(language)
 
   useLayoutEffect(() => {
-    if (isLoading) return undefined
+    if (isLoading || isClone) return undefined
     const context = gsap.context(() => {
-      gsap.fromTo('.service-card', { y: 48, autoAlpha: 0 }, {
-        y: 0,
-        autoAlpha: 1,
-        stagger: 0.1,
-        duration: 0.85,
-        ease: 'expo.out',
-        scrollTrigger: { trigger: rootRef.current, start: 'top 72%' },
-      })
+      revealSection('.service-card', rootRef.current, { y: 48, stagger: 0.1, duration: 0.85 })
     })
     return () => context.revert()
-  }, [isLoading, language])
+  }, [isClone, isLoading, language])
 
   return (
-    <section ref={rootRef} className="services section-pad" id="competencias">
+    <section ref={rootRef} className="services section-pad" id={isClone ? undefined : 'competencias'}>
       <div className="shell">
         <div className="section-heading">
           <p className="eyebrow"><span /> {copy.capabilities.eyebrow}</p>

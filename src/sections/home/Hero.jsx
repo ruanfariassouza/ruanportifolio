@@ -6,11 +6,12 @@ import Button from '../../components/ui/Button'
 import useInView from '../../hooks/useInView'
 import usePreloader from '../../hooks/usePreloader'
 import { gsap, SplitText } from '../../utils/gsap'
+import { revealHero } from '../../utils/reveal'
 import useLanguage from '../../hooks/useLanguage'
 
 const FluidSphere = lazy(() => import('../../canvas/scenes/FluidSphere'))
 
-export default function Hero() {
+export default function Hero({ isClone = false }) {
   const sectionRef = useRef(null)
   const headlineRef = useRef(null)
   const subRef = useRef(null)
@@ -19,7 +20,7 @@ export default function Hero() {
   const isInView = useInView(sectionRef)
   const { isLoading } = usePreloader()
   const { language, copy } = useLanguage()
-  const [webgl, setWebgl] = useState(() => window.innerWidth >= 768)
+  const [webgl, setWebgl] = useState(() => !isClone && window.innerWidth >= 768)
 
   useEffect(() => {
     const query = window.matchMedia('(min-width: 768px)')
@@ -29,16 +30,10 @@ export default function Hero() {
   }, [])
 
   useLayoutEffect(() => {
-    if (isLoading) return undefined
+    if (isLoading || isClone) return undefined
     const split = new SplitText(headlineRef.current, { type: 'words', wordsClass: 'hero-word' })
     const context = gsap.context(() => {
-      gsap.fromTo(split.words, { y: 80, autoAlpha: 0 }, {
-        y: 0,
-        autoAlpha: 1,
-        duration: 1.15,
-        stagger: 0.12,
-        ease: 'expo.out',
-      })
+      revealHero(split.words)
       gsap.fromTo(subRef.current, { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, delay: 0.6, ease: 'expo.out' })
       gsap.fromTo(ctaRef.current, { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, delay: 0.8, ease: 'expo.out' })
       gsap.fromTo(scrollRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7, delay: 1 })
@@ -47,7 +42,7 @@ export default function Hero() {
       context.revert()
       split.revert()
     }
-  }, [isLoading, language])
+  }, [isClone, isLoading, language])
 
   return (
     <section ref={sectionRef} className="hero" aria-labelledby="hero-title">
@@ -59,15 +54,15 @@ export default function Hero() {
       )}
       <div className="hero__content shell">
         <p className="eyebrow hero__eyebrow"><span /> {copy.hero.eyebrow}</p>
-        <h1 key={language} id="hero-title" ref={headlineRef} className="hero__title">
+        <h1 key={language} id={isClone ? undefined : 'hero-title'} ref={headlineRef} className="hero__title">
           {copy.hero.title} <em>{copy.hero.accent}</em>
         </h1>
         <p ref={subRef} className="hero__sub">{copy.hero.body}</p>
         <div ref={ctaRef} className="hero__cta"><Button to="/projetos">{copy.hero.primary}</Button><Button to="/sobre" className="button--quiet">{copy.hero.secondary}</Button></div>
-        {!isLoading && <div ref={scrollRef} className="hero__scroll"><ScrollIndicator /></div>}
-        <Link className="hero__side-note" to="/sobre" data-cursor="link">{copy.hero.sideA}<br />{copy.hero.sideB}</Link>
+        {!isLoading && !isClone && <div ref={scrollRef} className="hero__scroll"><ScrollIndicator /></div>}
+        {!isClone && <Link className="hero__side-note" to="/sobre" data-cursor="link">{copy.hero.sideA}<br />{copy.hero.sideB}</Link>}
       </div>
-      {!isLoading && <Marquee items={copy.hero.marquee} />}
+      {!isLoading && !isClone && <Marquee items={copy.hero.marquee} />}
     </section>
   )
 }

@@ -7,7 +7,7 @@ import { contactChannels } from '../../data/site'
 import useLanguage from '../../hooks/useLanguage'
 
 const ParticleField = lazy(() => import('../../canvas/scenes/ParticleField'))
-export default function ContactHome() {
+export default function ContactHome({ isClone = false }) {
   const rootRef = useRef(null)
   const active = useInView(rootRef)
   const { isLoading } = usePreloader()
@@ -18,7 +18,7 @@ export default function ContactHome() {
     { label: copy.contactHome.fallback[2], href: '/#processo' },
     { label: copy.contactHome.fallback[3], href: '/contato' },
   ]
-  const [webgl, setWebgl] = useState(() => window.innerWidth >= 768)
+  const [webgl, setWebgl] = useState(() => !isClone && window.innerWidth >= 768)
 
   useEffect(() => {
     const query = window.matchMedia('(min-width: 768px)')
@@ -35,7 +35,7 @@ export default function ContactHome() {
         <p className="eyebrow"><span /> {copy.contactHome.eyebrow}</p>
         <h2 className="contact-home__title">{copy.contactHome.title} <em>{copy.contactHome.accent}</em></h2>
         <p className="contact-home__availability">{copy.contactHome.body}</p>
-        <div className="contact-home__action"><Button to="/contato">{copy.contactHome.cta}</Button></div>
+        {!isClone && <div className="contact-home__action"><Button to="/contato">{copy.contactHome.cta}</Button></div>}
         <div className="social-row">
           {contactChannels.length
             ? contactChannels.map((item) => <a key={item.label} href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noreferrer' : undefined} data-cursor="link">{language === 'en' && item.label === 'E-mail' ? 'Email' : item.label}<span>↗</span></a>)

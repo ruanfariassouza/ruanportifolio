@@ -1,30 +1,24 @@
 import { useLayoutEffect, useRef } from 'react'
 import usePreloader from '../../hooks/usePreloader'
 import { gsap } from '../../utils/gsap'
+import { revealSection } from '../../utils/reveal'
 import useLanguage from '../../hooks/useLanguage'
 
-export default function AboutIntro() {
+export default function AboutIntro({ isClone = false }) {
   const rootRef = useRef(null)
   const { isLoading } = usePreloader()
   const { language, copy } = useLanguage()
 
   useLayoutEffect(() => {
-    if (isLoading) return undefined
+    if (isLoading || isClone) return undefined
     const context = gsap.context(() => {
-      gsap.fromTo('[data-about-reveal]', { y: 60, autoAlpha: 0 }, {
-        y: 0,
-        autoAlpha: 1,
-        duration: 1,
-        stagger: 0.16,
-        ease: 'expo.out',
-        scrollTrigger: { trigger: rootRef.current, start: 'top 72%' },
-      })
+      revealSection('[data-about-reveal]', rootRef.current, { y: 60, stagger: 0.16, duration: 1 })
     })
     return () => context.revert()
-  }, [isLoading, language])
+  }, [isClone, isLoading, language])
 
   return (
-    <section ref={rootRef} className="about-intro shell section-pad" id="manifesto">
+    <section ref={rootRef} className="about-intro shell section-pad" id={isClone ? undefined : 'manifesto'}>
       <div data-about-reveal>
         <p className="eyebrow"><span /> {copy.manifesto.eyebrow}</p>
         <h2>{copy.manifesto.title} <em>{copy.manifesto.accent}</em></h2>

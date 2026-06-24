@@ -6,7 +6,7 @@ import { gsap } from '../../utils/gsap'
 import usePreloader from '../../hooks/usePreloader'
 import useLanguage from '../../hooks/useLanguage'
 
-export default function Reel() {
+export default function Reel({ isClone = false }) {
   const rootRef = useRef(null)
   const trackRef = useRef(null)
   const { isLoading } = usePreloader()
@@ -14,7 +14,7 @@ export default function Reel() {
   const projects = localizeProjects(featuredProjects, language)
 
   useLayoutEffect(() => {
-    if (isLoading || window.innerWidth < 768) return undefined
+    if (isLoading || isClone || window.innerWidth < 768) return undefined
     const context = gsap.context(() => {
       const distance = () => Math.max(0, trackRef.current.scrollWidth - window.innerWidth)
       gsap.to(trackRef.current, {
@@ -31,7 +31,7 @@ export default function Reel() {
       })
     })
     return () => context.revert()
-  }, [isLoading, language])
+  }, [isClone, isLoading, language])
 
   return (
     <section ref={rootRef} className="reel" aria-label={copy.reel.aria}>
