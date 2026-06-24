@@ -17,7 +17,7 @@ export const translations = {
       eyebrow: 'Social Media · Direção Criativa · Presença Digital',
       title: 'Sua marca tem algo a dizer.',
       accent: 'Eu dou direção.',
-      body: 'Organizo imagem, texto e ritmo para transformar produto, rotina e repertório em uma presença digital mais clara, interessante e própria.',
+      body: 'Para pequenos negócios, moda, beleza e marcas locais: organizo imagem, texto e ritmo para transformar produto e rotina em presença digital clara, própria e fácil de comprar.',
       primary: 'Ver estudos de direção', secondary: 'Conhecer meu olhar',
       sideA: 'Ruan Farias', sideB: 'Direção Criativa',
       marquee: ['Direção editorial', '·', 'Estratégia visual', '·', 'Roteiro', '·', 'Texto', '·', 'Captação mobile', '·', 'Edição', '·'],
@@ -48,7 +48,7 @@ export const translations = {
     capabilities: { eyebrow: 'Serviços', title: 'Como esse olhar vira', accent: 'trabalho.' },
     contactHome: {
       eyebrow: 'Vamos conversar', title: 'Sua marca tem algo bom para mostrar.', accent: 'Vamos dar direção a isso.',
-      body: 'Atendo projetos de social media e direção criativa para pequenos negócios, moda, beleza, acessórios e marcas locais. Você traz o momento da marca; eu entro com olhar, organização e direção.',
+      body: 'Trabalho com social media e direção criativa para pequenos negócios, moda, beleza e marcas locais. Se você tem produto, rotina e repertório mas a presença digital ainda não reflete isso, eu trago o olhar, a organização e o ritmo para tornar claro e memorável.',
       cta: 'Conversar sobre a marca', fallback: ['Meu trabalho', 'Projetos', 'Processo', 'Contato'],
     },
     projects: {
@@ -95,7 +95,7 @@ export const translations = {
     },
     visual: {
       idea: 'IDEIA', presence: 'PRESENÇA', days: 'DIAS', fitting: 'PROVADOR', look: 'LOOK', real: 'REAL',
-      beauty: ['TESTE.', 'EXPLICA.', 'VENDE.'], diagnosis: 'DIAGNÓSTICO', home: 'CASA / 04', dishes: 'Louça', market: 'Mercado',
+      beauty: ['TESTE.', 'EXPLICA.', 'VENDE.'], diagnosis: 'DIAGNÓSTICO', home: 'CASA / 04', dishes: 'Louça', market: 'Mercado', pet: 'Pet',
     },
   },
   en: {
@@ -116,7 +116,7 @@ export const translations = {
       eyebrow: 'Social Media · Creative Direction · Digital Presence',
       title: 'Your brand has something to say.',
       accent: 'I give it direction.',
-      body: 'I organize image, writing and rhythm to turn products, routines and references into a clearer, more interesting and more distinctive digital presence.',
+      body: 'For small businesses, fashion, beauty and local brands: I organize image, writing and rhythm to turn products and routines into a clearer, distinctive and ownable digital presence.',
       primary: 'View direction studies', secondary: 'Discover my perspective',
       sideA: 'Ruan Farias', sideB: 'Creative Direction',
       marquee: ['Editorial direction', '·', 'Visual strategy', '·', 'Scripting', '·', 'Writing', '·', 'Mobile capture', '·', 'Editing', '·'],
@@ -147,7 +147,7 @@ export const translations = {
     capabilities: { eyebrow: 'Services', title: 'How this perspective becomes', accent: 'real work.' },
     contactHome: {
       eyebrow: 'Let’s talk', title: 'Your brand has something good to show.', accent: 'Let’s give it direction.',
-      body: 'I work on social media and creative direction projects for small businesses, fashion, beauty, accessories and local brands. You bring the brand’s moment; I bring perspective, organization and direction.',
+      body: 'I work on social media and creative direction for small businesses, fashion, beauty and local brands. If you have product, routine and references but the digital presence doesn’t yet reflect it, I bring the perspective, organization and rhythm to make it clear and memorable.',
       cta: 'Talk about your brand', fallback: ['My work', 'Projects', 'Process', 'Contact'],
     },
     projects: {
@@ -194,7 +194,7 @@ export const translations = {
     },
     visual: {
       idea: 'IDEA', presence: 'PRESENCE', days: 'DAYS', fitting: 'FITTING ROOM', look: 'REAL', real: 'LOOK',
-      beauty: ['TEST.', 'EXPLAIN.', 'SELL.'], diagnosis: 'DIAGNOSIS', home: 'HOME / 04', dishes: 'Dishes', market: 'Groceries',
+      beauty: ['TEST.', 'EXPLAIN.', 'SELL.'], diagnosis: 'DIAGNOSIS', home: 'HOME / 04', dishes: 'Dishes', market: 'Groceries', pet: 'Pet',
     },
   },
 }
