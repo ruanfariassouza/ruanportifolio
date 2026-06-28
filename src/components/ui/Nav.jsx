@@ -40,10 +40,7 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [pathname, isHome])
 
-  const toggleNav = () => {
-    setOpen(!open)
-    document.body.classList.toggle('nav-open')
-  }
+
 
     const navLinks = [
     { label: copy.nav.about, href: '#manifesto', isHash: true, icon: 'eye' },

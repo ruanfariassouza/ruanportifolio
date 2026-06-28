@@ -35,7 +35,7 @@ export default function Reel({ isClone = false }) {
 
   return (
     <section ref={rootRef} className="cases-stack" aria-label={copy.reel.aria}>
-      {projects.map((project, i) => (
+      {projects.map((project) => (
         <article key={project.slug} className="case-fullbleed">
           <div className="case-fullbleed__bg">
             <ProjectVisual project={project} />
@@ -43,7 +43,7 @@ export default function Reel({ isClone = false }) {
           </div>
           <div className="case-fullbleed__content shell">
             <div className="case-fullbleed__tags">
-              {copy.reel.tags.map(tag => <span key={tag} className="tag-tech">[{tag}]</span>)}
+              {copy.reel.tags.map((tag) => <span key={tag} className="tag-tech">[{tag}]</span>)}
               <span className="tag-tech tag-tech--status">status: {project.status || 'estudo'}</span>
             </div>
             <h3 className="case-fullbleed__title">{project.name}</h3>

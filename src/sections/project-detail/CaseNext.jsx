@@ -1,9 +1,5 @@
 import { Link } from 'react-router-dom'
-import ProjectVisual from '../../components/shared/ProjectVisual'
-import useLanguage from '../../hooks/useLanguage'
-
 export default function CaseNext({ project }) {
-  const { copy } = useLanguage()
   return (
     <section className="shell" style={{ padding: '6rem 0', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
       <Link to={`/projetos/${project.slug}`} data-cursor="project" style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '1.2rem', color: '#fff', textDecoration: 'none' }} className="link-hover">
