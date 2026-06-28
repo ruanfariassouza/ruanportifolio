@@ -1,26 +1,19 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Marquee from '../../components/ui/Marquee'
-import ScrollIndicator from '../../components/ui/ScrollIndicator'
-import Button from '../../components/ui/Button'
 import useInView from '../../hooks/useInView'
 import usePreloader from '../../hooks/usePreloader'
 import { gsap, SplitText } from '../../utils/gsap'
-import { revealHero } from '../../utils/reveal'
 import useLanguage from '../../hooks/useLanguage'
 
 const FluidSphere = lazy(() => import('../../canvas/scenes/FluidSphere'))
 
 export default function Hero({ isClone = false }) {
-  const sectionRef = useRef(null)
-  const headlineRef = useRef(null)
+  const rootRef = useRef(null)
+  const titleRef = useRef(null)
   const subRef = useRef(null)
-  const ctaRef = useRef(null)
-  const scrollRef = useRef(null)
-  const isInView = useInView(sectionRef)
+  const inView = useInView(rootRef)
   const { isLoading } = usePreloader()
   const { language, copy } = useLanguage()
-  const [webgl, setWebgl] = useState(() => !isClone && window.innerWidth >= 768)
+  const [webgl, setWebgl] = useState(() => window.innerWidth >= 768)
 
   useEffect(() => {
     const query = window.matchMedia('(min-width: 768px)')
@@ -31,46 +24,42 @@ export default function Hero({ isClone = false }) {
 
   useLayoutEffect(() => {
     if (isLoading || isClone) return undefined
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const tween = gsap.set([headlineRef.current, subRef.current, ctaRef.current, scrollRef.current].filter(Boolean), {
-        y: 0,
-        autoAlpha: 1,
-        clearProps: 'transform',
-      })
-      return () => tween.kill()
-    }
-    const split = new SplitText(headlineRef.current, { type: 'words', wordsClass: 'hero-word' })
-    const context = gsap.context(() => {
-      revealHero(split.words)
-      gsap.fromTo(subRef.current, { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, delay: 0.6, ease: 'expo.out' })
-      gsap.fromTo(ctaRef.current, { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, delay: 0.8, ease: 'expo.out' })
-      gsap.fromTo(scrollRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7, delay: 1 })
+    const split = new SplitText(titleRef.current, { type: 'words,lines' })
+    
+    // Wrap words to keep them block level for overflow: hidden
+    split.words.forEach(word => {
+      const wrapper = document.createElement('div')
+      wrapper.className = 'hero-word'
+      wrapper.style.overflow = 'hidden'
+      word.parentNode.insertBefore(wrapper, word)
+      wrapper.appendChild(word)
     })
-    return () => {
-      context.revert()
-      split.revert()
-    }
+
+    const context = gsap.context(() => {
+      gsap.fromTo(split.words, { yPercent: 120 }, {
+        yPercent: 0,
+        duration: 1.4,
+        stagger: 0.05,
+        ease: 'expo.out',
+      })
+      gsap.fromTo(subRef.current, { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1, delay: 0.4, ease: 'expo.out' })
+    })
+
+    return () => { context.revert(); split.revert() }
   }, [isClone, isLoading, language])
 
   return (
-    <section ref={sectionRef} className="hero" aria-labelledby="hero-title">
+    <header ref={rootRef} className="hero">
       <div className="hero__gradient" />
-      {webgl && (
-        <div className="hero__canvas" aria-hidden="true">
-          <Suspense fallback={null}><FluidSphere active={isInView && !isLoading} /></Suspense>
-        </div>
-      )}
+      {webgl && <div className="hero__canvas"><Suspense fallback={null}><FluidSphere active={inView && !isClone && !isLoading} /></Suspense></div>}
       <div className="hero__content shell">
-        <p className="eyebrow hero__eyebrow"><span /> {copy.hero.eyebrow}</p>
-        <h1 key={language} id={isClone ? undefined : 'hero-title'} ref={headlineRef} className="hero__title">
-          {copy.hero.title} <em>{copy.hero.accent}</em>
-        </h1>
+        <h1 key={language} ref={titleRef} className="hero__title">{copy.hero.title}</h1>
         <p ref={subRef} className="hero__sub">{copy.hero.body}</p>
-        <div ref={ctaRef} className="hero__cta"><Button to="/projetos">{copy.hero.primary}</Button><Button to="/sobre" className="button--quiet">{copy.hero.secondary}</Button></div>
-        {!isLoading && !isClone && <div ref={scrollRef} className="hero__scroll"><ScrollIndicator /></div>}
-        {!isClone && <Link className="hero__side-note" to="/sobre" data-cursor="link">{copy.hero.sideA}<br />{copy.hero.sideB}</Link>}
       </div>
-      {!isLoading && !isClone && <Marquee items={copy.hero.marquee} />}
-    </section>
+      
+      <div className="scroll-indicator" style={{ position: 'absolute', bottom: '2.5rem', left: '50%', transform: 'translateX(-50%)', opacity: 0.5, fontFamily: 'var(--font-display)', fontSize: '0.8rem' }}>
+        <span>{copy.scroll}</span>
+      </div>
+    </header>
   )
 }

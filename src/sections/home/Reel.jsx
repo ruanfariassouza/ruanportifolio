@@ -2,51 +2,60 @@ import { useLayoutEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import ProjectVisual from '../../components/shared/ProjectVisual'
 import { featuredProjects, localizeProjects } from '../../data/projects'
-import { gsap } from '../../utils/gsap'
 import usePreloader from '../../hooks/usePreloader'
 import useLanguage from '../../hooks/useLanguage'
+import { gsap } from '../../utils/gsap'
 
 export default function Reel({ isClone = false }) {
   const rootRef = useRef(null)
-  const trackRef = useRef(null)
   const { isLoading } = usePreloader()
   const { language, copy } = useLanguage()
   const projects = localizeProjects(featuredProjects, language)
 
   useLayoutEffect(() => {
-    if (isLoading || isClone || window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+    if (isLoading || isClone) return undefined
+    const items = rootRef.current.querySelectorAll('.case-fullbleed')
+    
     const context = gsap.context(() => {
-      const distance = () => Math.max(0, trackRef.current.scrollWidth - window.innerWidth)
-      gsap.to(trackRef.current, {
-        x: () => -distance(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: rootRef.current,
-          start: 'top top',
-          end: () => `+=${distance()}`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
+      items.forEach((item) => {
+        gsap.fromTo(item.querySelector('.case-fullbleed__content'), 
+          { autoAlpha: 0, y: 30 }, 
+          {
+            autoAlpha: 1, 
+            y: 0, 
+            duration: 1.2, 
+            ease: 'power3.out',
+            scrollTrigger: { trigger: item, start: 'top 60%' }
+          }
+        )
       })
     })
     return () => context.revert()
   }, [isClone, isLoading, language])
 
   return (
-    <section ref={rootRef} className="reel" aria-label={copy.reel.aria}>
-      <div className="reel__intro shell">
-        <div><p className="eyebrow"><span /> {copy.reel.eyebrow}</p><h2>{copy.reel.title}<br /><em>{copy.reel.accent}</em></h2></div>
-        <p>{copy.reel.body}</p>
-      </div>
-      <div ref={trackRef} className="reel__track">
-        {projects.map((project) => (
-          <Link key={project.slug} className="reel-card" to={`/projetos/${project.slug}`} data-cursor="project">
+    <section ref={rootRef} className="cases-stack" aria-label={copy.reel.aria}>
+      {projects.map((project, i) => (
+        <article key={project.slug} className="case-fullbleed">
+          <div className="case-fullbleed__bg">
             <ProjectVisual project={project} />
-            <div className="reel-card__meta"><span>{project.type}</span><h3>{project.name}</h3><p>{project.coverLine}</p></div>
-          </Link>
-        ))}
-      </div>
+            <div className="case-fullbleed__overlay" />
+          </div>
+          <div className="case-fullbleed__content shell">
+            <div className="case-fullbleed__tags">
+              {copy.reel.tags.map(tag => <span key={tag} className="tag-tech">[{tag}]</span>)}
+              <span className="tag-tech tag-tech--status">status: {project.status || 'estudo'}</span>
+            </div>
+            <h3 className="case-fullbleed__title">{project.name}</h3>
+            <p className="case-fullbleed__claim">{project.coverLine}</p>
+            <div className="case-fullbleed__action">
+              <Link to={`/projetos/${project.slug}`} className="link-hover">
+                ↗
+              </Link>
+            </div>
+          </div>
+        </article>
+      ))}
     </section>
   )
 }
