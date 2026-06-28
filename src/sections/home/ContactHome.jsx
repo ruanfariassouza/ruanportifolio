@@ -1,24 +1,18 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { lazy, Suspense, useLayoutEffect, useRef, useState, useEffect } from 'react'
 import useInView from '../../hooks/useInView'
 import usePreloader from '../../hooks/usePreloader'
-import Button from '../../components/ui/Button'
-import { contactChannels } from '../../data/site'
+import { gsap, SplitText } from '../../utils/gsap'
 import useLanguage from '../../hooks/useLanguage'
 
 const ParticleField = lazy(() => import('../../canvas/scenes/ParticleField'))
+
 export default function ContactHome({ isClone = false }) {
   const rootRef = useRef(null)
-  const active = useInView(rootRef)
+  const titleRef = useRef(null)
+  const inView = useInView(rootRef)
   const { isLoading } = usePreloader()
   const { language, copy } = useLanguage()
-  const defaultLinks = [
-    { label: copy.contactHome.fallback[0], href: '/sobre' },
-    { label: copy.contactHome.fallback[1], href: '/projetos' },
-    { label: copy.contactHome.fallback[2], href: '/#processo' },
-    { label: copy.contactHome.fallback[3], href: '/contato' },
-  ]
-  const [webgl, setWebgl] = useState(() => !isClone && window.innerWidth >= 768)
+  const [webgl, setWebgl] = useState(() => window.innerWidth >= 768)
 
   useEffect(() => {
     const query = window.matchMedia('(min-width: 768px)')
@@ -27,21 +21,37 @@ export default function ContactHome({ isClone = false }) {
     return () => query.removeEventListener('change', update)
   }, [])
 
+  useLayoutEffect(() => {
+    if (isLoading || isClone) return undefined
+    const context = gsap.context(() => {
+      gsap.fromTo('.contact-home__action', { autoAlpha: 0, y: 10 }, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 1,
+        delay: 0.2,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: rootRef.current, start: 'top 75%' },
+      })
+    })
+    return () => { context.revert() }
+  }, [isClone, isLoading, language])
+
   return (
-    <section ref={rootRef} className="contact-home">
+    <footer ref={rootRef} className="contact-home" id={isClone ? undefined : 'contato'}>
       <div className="contact-home__gradient" />
-      {webgl && <div className="contact-home__canvas"><Suspense fallback={null}><ParticleField active={active && !isLoading} /></Suspense></div>}
+      {webgl && (
+        <div className="contact-home__canvas" aria-hidden="true">
+          <Suspense fallback={null}><ParticleField active={inView && !isLoading && !isClone} /></Suspense>
+        </div>
+      )}
       <div className="contact-home__content shell">
-        <p className="eyebrow"><span /> {copy.contactHome.eyebrow}</p>
-        <h2 className="contact-home__title">{copy.contactHome.title} <em>{copy.contactHome.accent}</em></h2>
-        <p className="contact-home__availability">{copy.contactHome.body}</p>
-        {!isClone && <div className="contact-home__action"><Button to="/contato">{copy.contactHome.cta}</Button></div>}
-        <div className="social-row">
-          {contactChannels.length
-            ? contactChannels.map((item) => <a key={item.label} href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noreferrer' : undefined} data-cursor="link">{language === 'en' && item.label === 'E-mail' ? 'Email' : item.label}<span>↗</span></a>)
-            : defaultLinks.map((item) => <Link key={item.label} to={item.href} data-cursor="link">{item.label}<span>↗</span></Link>)}
+
+        <div className="contact-home__action" style={{ marginTop: '3rem' }}>
+          <a href="mailto:contato@ruan.help" className="link-hover" style={{ fontSize: '1.25rem', fontFamily: 'var(--font-display)' }}>
+            Falar ↗
+          </a>
         </div>
       </div>
-    </section>
+    </footer>
   )
 }

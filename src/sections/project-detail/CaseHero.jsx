@@ -18,12 +18,18 @@ export default function CaseHero({ project }) {
   }, [isLoading, project.slug])
 
   return (
-    <header className="case-hero">
-      <div ref={mediaRef} className="case-hero__media"><ProjectVisual project={project} /></div>
-      <div ref={contentRef} className="case-hero__content shell">
-        <span>{project.num} / {project.type} / {project.year}</span>
-        <h1>{project.name}</h1>
-        <p>{project.coverLine}</p>
+    <header ref={contentRef} className="case-fullbleed" style={{ marginBottom: '4rem' }}>
+      <div className="case-fullbleed__bg">
+        <ProjectVisual project={project} />
+        <div className="case-fullbleed__overlay" />
+      </div>
+      <div className="case-fullbleed__content shell">
+        <div className="case-fullbleed__tags">
+          {project.tags?.map(tag => <span key={tag} className="tag-tech">[{tag}]</span>)}
+          <span className="tag-tech tag-tech--status">status: {project.status || 'estudo'}</span>
+        </div>
+        <h1 className="case-fullbleed__title" style={{ color: '#fff' }}>{project.name}</h1>
+        <p className="case-fullbleed__claim">{project.coverLine}</p>
       </div>
     </header>
   )

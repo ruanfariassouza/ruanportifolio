@@ -1,115 +1,107 @@
-import { useEffect, useRef, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
-import { gsap } from '../../utils/gsap'
-import usePreloader from '../../hooks/usePreloader'
+import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import useLanguage from '../../hooks/useLanguage'
 
 export default function Nav() {
-  const navRef = useRef(null)
-  const linksRef = useRef(null)
-  const toggleRef = useRef(null)
   const [open, setOpen] = useState(false)
-  const { isLoading } = usePreloader()
+  const [activeHash, setActiveHash] = useState('')
+  const { pathname } = useLocation()
   const { language, copy, toggleLanguage } = useLanguage()
-  const location = useLocation()
-  const links = [
-    { label: copy.nav.projects, to: '/projetos' },
-    { label: copy.nav.process, to: '/#processo' },
-    { label: copy.nav.capabilities, to: '/#competencias' },
-    { label: copy.nav.about, to: '/sobre' },
-    { label: copy.nav.contact, to: '/contato' },
-  ]
+
+  const isHome = pathname === '/'
 
   useEffect(() => {
     setOpen(false)
-  }, [location.pathname, location.hash])
-
-  useEffect(() => {
-    if (!open) return undefined
-
-    const root = document.documentElement
-    const body = document.body
-    const scrollY = window.scrollY
-    const previousTop = body.style.top
-    const frame = window.requestAnimationFrame(() => linksRef.current?.querySelector('.nav__link')?.focus())
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        setOpen(false)
-        toggleRef.current?.focus()
-        return
+    document.body.classList.remove('nav-open')
+    
+    if (!isHome) return
+    
+    const handleScroll = () => {
+      const sections = ['manifesto', 'metodo', 'repertorio', 'contato']
+      const scrollPosition = window.scrollY + window.innerHeight / 2
+      
+      for (const section of sections) {
+        const element = document.getElementById(section)
+        if (element) {
+          const { top, bottom } = element.getBoundingClientRect()
+          const elementTop = top + window.scrollY
+          const elementBottom = bottom + window.scrollY
+          
+          if (scrollPosition >= elementTop && scrollPosition <= elementBottom) {
+            setActiveHash(section)
+            return
+          }
+        }
       }
-      if (event.key !== 'Tab') return
+      setActiveHash('')
+    }
+    
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [pathname, isHome])
 
-      const focusable = [...navRef.current.querySelectorAll('a[href], button:not([disabled])')]
-        .filter((element) => window.getComputedStyle(element).visibility !== 'hidden')
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last?.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first?.focus()
+  const toggleNav = () => {
+    setOpen(!open)
+    document.body.classList.toggle('nav-open')
+  }
+
+    const navLinks = [
+    { label: copy.nav.about, href: '#manifesto', isHash: true, icon: 'eye' },
+    { label: copy.nav.process, href: '#metodo', isHash: true, icon: 'node' },
+    { label: copy.nav.qualifications, href: '#repertorio', isHash: true, icon: 'asterisk' },
+    { label: copy.nav.contact, href: '#contato', isHash: true, icon: 'dash' },
+  ]
+
+  const icons = {
+    circle: <circle cx="12" cy="12" r="6" fill="currentColor" />,
+    eye: <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" strokeWidth="2" />,
+    play: <polygon points="10,8 16,12 10,16" fill="currentColor" />,
+    arrow: <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" fill="none" />,
+    node: <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" fill="none" />,
+    asterisk: <path d="M12 4v16M4 12h16M6.3 6.3l11.4 11.4M6.3 17.7L17.7 6.3" stroke="currentColor" strokeWidth="2" fill="none" />,
+    dash: <line x1="6" y1="12" x2="18" y2="12" stroke="currentColor" strokeWidth="2" />
+  }
+
+  const handleLinkClick = (href, isHash) => {
+    if (isHash && isHome) {
+      const element = document.querySelector(href)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
       }
     }
-
-    root.classList.add('nav-open')
-    body.classList.add('nav-open')
-    body.style.top = `-${scrollY}px`
-    window.addEventListener('keydown', onKeyDown)
-    return () => {
-      window.cancelAnimationFrame(frame)
-      window.removeEventListener('keydown', onKeyDown)
-      root.classList.remove('nav-open')
-      body.classList.remove('nav-open')
-      body.style.top = previousTop
-      window.scrollTo(0, scrollY)
-    }
-  }, [open])
-
-  useEffect(() => {
-    if (isLoading) return undefined
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const tween = gsap.set(navRef.current, { autoAlpha: 1, y: 0, clearProps: 'transform' })
-      return () => tween.kill()
-    }
-    const tween = gsap.fromTo(navRef.current, { autoAlpha: 0, y: -24 }, {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.9,
-      ease: 'expo.out',
-      clearProps: 'transform',
-    })
-    return () => tween.kill()
-  }, [isLoading])
+    setOpen(false)
+    document.body.classList.remove('nav-open')
+  }
 
   return (
-    <nav ref={navRef} className={`nav ${open ? 'nav--open' : ''}`} aria-label={copy.nav.aria}>
-      <NavLink to="/" className="nav__logo" data-cursor="link" aria-label={copy.nav.home}>
-        <span>RUAN</span><span>FARIAS</span>
-      </NavLink>
-      <div ref={linksRef} id="primary-navigation" className="nav__links">
-        {links.map((link) => (
-          <NavLink
-            key={link.label}
-            to={link.to}
-            className={({ isActive }) => {
-              const active = link.to.includes('#') ? location.hash === `#${link.to.split('#')[1]}` : isActive
-              return active ? 'nav__link is-active' : 'nav__link'
-            }}
-            data-cursor="link"
-          >
-            {link.label}
-          </NavLink>
-        ))}
-      </div>
-      <div className="nav__meta">
-        <button className="nav__language" type="button" onClick={toggleLanguage} aria-label={copy.nav.switchLabel} data-cursor="link">{language === 'pt' ? 'EN' : 'PT'}</button>
-        <span className="nav__location">Vila Velha · ES</span>
-      </div>
-      <button ref={toggleRef} className="nav__toggle" type="button" onClick={() => setOpen((value) => !value)} aria-controls="primary-navigation" aria-expanded={open} aria-label={open ? copy.nav.close : copy.nav.menu}>
-        <span /><span />
-      </button>
-    </nav>
+    <>
+      <nav className={`nav ${open ? 'nav--open' : ''}`} aria-label={copy.nav.aria}>
+        <Link to="/" className="nav__logo" aria-label={copy.nav.home} onClick={() => handleLinkClick('/', false)}>r. farias</Link>
+        <div className="nav__meta">
+          <span className="nav__location">BR · GMT-3</span>
+          <button type="button" className="nav__language" onClick={toggleLanguage} aria-label={copy.nav.switchLabel}>
+            {language.toUpperCase()}
+          </button>
+        </div>
+      </nav>
+      {isHome && (
+        <div className="nav-dots">
+          {navLinks.map((link) => (
+            <a 
+              key={link.label} 
+              href={link.href} 
+              className={`nav__dot ${activeHash === link.href.substring(1) ? 'is-active' : ''}`}
+              aria-label={link.label}
+              onClick={(e) => { e.preventDefault(); handleLinkClick(link.href, true) }}
+            >
+              <svg className="nav__dot-inner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {icons[link.icon]}
+              </svg>
+              <span className="nav__dot-label">{link.label}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </>
   )
 }
