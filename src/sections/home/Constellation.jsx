@@ -31,12 +31,12 @@ export default function Constellation({ isClone = false }) {
       )
     })
     return () => context.revert()
-  }, [isClone, isLoading, language])
+  }, [copy.constellation, isClone, isLoading, language])
 
   return (
     <section ref={rootRef} className="constellation" id={isClone ? undefined : 'repertorio'}>
       <div className="constellation__space">
-        {copy.constellation.map((item, index) => (
+        {copy.constellation.map((item) => (
           <span 
             key={item.text} 
             className="constellation__item"

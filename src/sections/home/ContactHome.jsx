@@ -1,17 +1,16 @@
 import { lazy, Suspense, useLayoutEffect, useRef, useState, useEffect } from 'react'
 import useInView from '../../hooks/useInView'
 import usePreloader from '../../hooks/usePreloader'
-import { gsap, SplitText } from '../../utils/gsap'
+import { gsap } from '../../utils/gsap'
 import useLanguage from '../../hooks/useLanguage'
 
 const ParticleField = lazy(() => import('../../canvas/scenes/ParticleField'))
 
 export default function ContactHome({ isClone = false }) {
   const rootRef = useRef(null)
-  const titleRef = useRef(null)
   const inView = useInView(rootRef)
   const { isLoading } = usePreloader()
-  const { language, copy } = useLanguage()
+  const { language } = useLanguage()
   const [webgl, setWebgl] = useState(() => window.innerWidth >= 768)
 
   useEffect(() => {
